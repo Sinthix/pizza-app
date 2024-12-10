@@ -14,18 +14,27 @@ export const useIngredientsStore = defineStore('ingredients', {
         console.error('Error fetching ingredients:', error);
       }
     },
-    async addIngredient(newIngredient) {
+    async createIngredient(ingredient) {
       try {
-        const response = await axios.post('http://localhost:8000/api/ingredients', newIngredient);
+        const response = await axios.post('http://localhost:8000/api/ingredients', ingredient);
         this.ingredients.push(response.data);
       } catch (error) {
-        console.error('Error adding ingredient:', error);
+        console.error('Error creating ingredient:', error);
+      }
+    },
+    async updateIngredient(id, ingredient) {
+      try {
+        const response = await axios.put(`http://localhost:8000/api/ingredients/${id}`, ingredient);
+        const index = this.ingredients.findIndex(i => i.id === id);
+        if (index !== -1) this.ingredients[index] = response.data;
+      } catch (error) {
+        console.error('Error updating ingredient:', error);
       }
     },
     async deleteIngredient(id) {
       try {
         await axios.delete(`http://localhost:8000/api/ingredients/${id}`);
-        this.ingredients = this.ingredients.filter((ingredient) => ingredient.id !== id);
+        this.ingredients = this.ingredients.filter(i => i.id !== id);
       } catch (error) {
         console.error('Error deleting ingredient:', error);
       }
