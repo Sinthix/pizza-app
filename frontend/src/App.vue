@@ -7,9 +7,6 @@
           <nav>
             <ul class="nav">
               <li class="nav-item">
-                <router-link class="nav-link text-white" to="/">Home</router-link>
-              </li>
-              <li class="nav-item">
                 <router-link class="nav-link text-white" to="/login">Login</router-link>
               </li>
               <li class="nav-item">
