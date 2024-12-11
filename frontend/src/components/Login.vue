@@ -46,15 +46,15 @@ import axios from 'axios';
       };
     },
     methods: {
-      login() {
-        axios
+      async login() {
+        await axios
           .post('http://localhost:8000/api/login', {
             email: this.email,
             password: this.password
           })
           .then((response) => {
-            localStorage.setItem('token', response.data.token); // Store token
-            this.$router.push('/management'); // Redirect to management
+            localStorage.setItem('token', response.data.token);
+            this.$router.push('/management'); 
           })
           .catch((error) => {
             console.error('Login failed:', error);

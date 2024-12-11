@@ -6,11 +6,14 @@
           <h1 class="mb-0">Pizza Management</h1>
           <nav>
             <ul class="nav">
-              <li class="nav-item">
+              <li class="nav-item" v-if="!loggedIn">
                 <router-link class="nav-link text-white" to="/login">Login</router-link>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" v-if="!loggedIn">
                 <router-link class="nav-link text-white" to="/register">Register</router-link>
+              </li>
+              <li class="nav-item" v-if="loggedIn">
+                <button class="btn btn-outline-light nav-link" @click="logout">Logout</button>
               </li>
             </ul>
           </nav>
@@ -34,7 +37,26 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {
+      
+    };
+  },
+  computed: {
+    loggedIn() {
+      return localStorage.getItem('token') !== null;
+    },
+  },
+  methods: {
+    checkAuth() {
+      return localStorage.getItem('token') !== null;
+    },
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/login');
+    },
+  },
 };
 </script>
 
