@@ -21,7 +21,7 @@
   
               <div class="mb-3">
                 <label class="form-label">Select Ingredients (Max 8)</label>
-                <div v-if="ingredients.length > 0">
+                <div v-if="ingredients && ingredients.length > 0">
                   <div
                     v-for="ingredient in ingredients"
                     :key="ingredient.id"
@@ -39,7 +39,7 @@
                       class="form-check-label"
                       :for="'ingredient-' + ingredient.id"
                     >
-                      {{ ingredient.name }} (${{ ingredient.cost_price.toFixed(2) }})
+                      {{ ingredient.name }} (${{ ingredient.cost_price }})
                     </label>
                   </div>
                   <div v-if="selectedIngredients.length >= 8" class="text-danger mt-2">
@@ -54,7 +54,7 @@
               <div class="mb-3">
                 <label class="form-label">Selling Price</label>
                 <p class="form-control">
-                  ${{ calculateSellingPrice().toFixed(2) }}
+                  ${{ sellingPrice }}
                 </p>
               </div>
   
@@ -96,17 +96,30 @@
           image: null,
           ingredients: [],
         },
+        ingredients: [],
         selectedIngredients: [],
         editMode: false,
+        sellingPrice: 0,
       };
     },
     computed: {
-      ingredients() {
-        const store = useIngredientsStore();
-        return store.ingredients;
-      },
     },
-    mounted() {
+    watch: {
+      selectedIngredients: {
+        handler(newIngredients) {
+          this.sellingPrice = this.calculateSellingPrice(newIngredients);
+        },
+        deep: true,
+      }
+    },
+    async mounted() {
+      const store = useIngredientsStore();
+        try {
+          await store.fetchIngredients();
+          this.ingredients = store.ingredients;
+        } catch (error) {
+          console.error('Failed to fetch ingredients:', error);
+        }
       if (this.pizza) {
         this.editMode = true;
         this.pizzaData = { ...this.pizza };
@@ -115,11 +128,15 @@
     },
     methods: {
       calculateSellingPrice() {
-        const totalCost = this.selectedIngredients.reduce(
-          (sum, ingredient) => sum + ingredient.cost_price,
-          0
-        );
-        return totalCost + totalCost * 0.5;
+        const totalCost = this.selectedIngredients.reduce((sum, ingredient) => {
+        const costPrice = Number(ingredient.cost_price);
+        if (isNaN(costPrice)) {
+          return sum;
+        }
+        return sum + costPrice;
+      }, 0);
+        let total = totalCost + totalCost * 0.5
+        return Number.parseFloat(total).toFixed(2);
       },
       isIngredientDisabled(ingredient) {
         return (
