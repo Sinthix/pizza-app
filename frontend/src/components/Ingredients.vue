@@ -4,7 +4,7 @@
       <h2>Ingredients</h2>
       <button class="btn btn-success" @click="showCreateIngredientModal">Create Ingredient</button>
     </div>
-    <div v-if="ingredients.length > 0">
+    <div v-if="ingredients && ingredients.length > 0">
       <div class="row">
         <div class="col-md-4" v-for="ingredient in ingredients" :key="ingredient.id">
           <div class="card mb-4">
@@ -57,7 +57,12 @@ export default {
   },
   async mounted() {
     const store = useIngredientsStore();
-    this.ingredients = await store.fetchIngredients();
+    try {
+      await store.fetchIngredients();
+      this.ingredients = store.ingredients;
+    } catch (error) {
+      console.error('Failed to fetch ingredients:', error);
+    }
   },
 };
 </script>

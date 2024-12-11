@@ -7,7 +7,7 @@
           <button class="btn btn-success" @click="showCreatePizzaModal">Create Pizza</button>
         </div>
       </div>
-      <div v-if="pizzas.length > 0">
+      <div v-if="pizzas && pizzas.length > 0">
         <div class="row">
           <div class="col-md-4" v-for="pizza in pizzas" :key="pizza.id">
             <div class="card mb-4">
@@ -30,7 +30,6 @@
         <p>No pizzas available. Please create one.</p>
       </div>
   
-      <!-- Pizza Modal -->
       <PizzaModal v-if="showCreatePizzaModalFlag" @close="showCreatePizzaModal" />
     </div>
   </template>
@@ -66,6 +65,12 @@
     async mounted() {
       const store = usePizzasStore();
       this.pizzas = await store.fetchPizzas();
+      try {
+        await store.fetchPizzas();
+        this.pizzas = store.pizzas;
+      } catch (error) {
+        console.error('Failed to fetch pizzas:', error);
+      }
     },
   };
   </script>

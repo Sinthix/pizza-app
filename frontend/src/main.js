@@ -15,6 +15,7 @@ if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
+
 const pinia = createPinia();
 
-createApp(App).use(axios).use(pinia).use(router).use(i18n).mount('#app')
+createApp(App).use(pinia).use(router, axios).use(i18n).mount('#app')
