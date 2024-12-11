@@ -7,7 +7,7 @@
             <button type="button" class="btn-close" @click="$emit('close')" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form @submit.prevent="savePizza">
+            <form @submit.prevent="savePizza" enctype="multipart/form-data">
               <div class="mb-3">
                 <label for="pizza-name" class="form-label">Pizza Name</label>
                 <input
@@ -64,6 +64,7 @@
                   type="file"
                   class="form-control"
                   id="pizza-image"
+                  accept="image/png, image/jpeg, image/gif, image/jpg, image/svg+xml"
                   @change="handlePizzaImageChange"
                 />
               </div>
@@ -100,6 +101,7 @@
         selectedIngredients: [],
         editMode: false,
         sellingPrice: 0,
+        formData: null,
       };
     },
     computed: {
@@ -150,15 +152,15 @@
             alert('You must select at least one ingredient.');
             return;
           }
-          this.pizzaData.ingredients = this.selectedIngredients;
+          this.pizzaData.ingredients = this.selectedIngredients.map(ingredient => ingredient.id);
           this.pizzaData.selling_price = this.calculateSellingPrice();
-  
+          
           const store = usePizzasStore();
           if (this.editMode) {
             await store.updatePizza(this.pizzaData);
             alert('Pizza updated successfully!');
           } else {
-            await store.createPizza(this.pizzaData);
+            await store.addPizza(this.pizzaData);
             alert('Pizza created successfully!');
           }
           this.$emit('close');

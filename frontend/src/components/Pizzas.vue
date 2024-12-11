@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <div class="d-flex justify-content-between mb-3">
+  <div>
+    <div class="d-flex justify-content-between mb-3">
         <h2>Pizzas</h2>
         <div>
           <button class="btn btn-primary" @click="createRandomPizza">Generate Random Pizza</button>
@@ -12,7 +12,7 @@
           <div class="col-md-4" v-for="pizza in pizzas" :key="pizza.id">
             <div class="card mb-4">
               <img
-                :src="pizza.image_url"
+                :src="pizza.image"
                 :alt="pizza.name"
                 class="card-img-top"
                 style="height: 200px; object-fit: cover"

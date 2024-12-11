@@ -9,6 +9,12 @@ class IngredientController extends Controller
     public function index()
     {
         $ingredients = Ingredient::all();
+
+        $ingredients->each(function ($ingredient) {
+            if ($ingredient->image) {
+                $ingredient->image = asset('storage/' . $ingredient->image); // Generate the full URL for the image
+            }
+        });
         return response()->json($ingredients);
     }
 
@@ -20,14 +26,16 @@ class IngredientController extends Controller
             'image' => 'nullable|url',
             'randomization_percentage' => 'required|integer|between:0,100',
         ]);
-
-        $ingredient = Ingredient::create([
-            'name' => $validated['name'],
-            'cost_price' => $validated['cost_price'],
-            'image' => $validated['image'],
-            'randomization_percentage' => $validated['randomization_percentage'],
-        ]);
-
+        
+        $ingredient = new Ingredient();
+        $ingredient->name = $validated['name'];
+        $ingredient->image = $validated['image'];
+        $image = $request->file('image');
+        $imagePath = $image->store('images/pizzas', 'public');
+        $ingredient->image = $imagePath;
+        $ingredient->cost_price = $validated['cost_price'];
+        $ingredient->randomization_percentage = $validated['randomization_percentage'];
+        $ingredient->save();
         return response()->json($ingredient, 201);
     }
 

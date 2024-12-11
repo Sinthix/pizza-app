@@ -11,6 +11,10 @@ class PizzaController extends Controller
     public function index()
     {
         $pizzas = Pizza::with('ingredients')->get(); 
+
+        $pizzas->each(function ($pizza) {
+            $pizza->image = asset('storage/' . $pizza->image);
+        });
         return response()->json($pizzas);
     }
 
@@ -20,13 +24,16 @@ class PizzaController extends Controller
             'name' => 'required|string|min:2|max:50|unique:pizzas,name|regex:/^[^{}"\[\]\.!]+$/',
             'ingredients' => 'required|array|max:8', 
             'ingredients.*' => 'exists:ingredients,id',
-            'image' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $pizza = new Pizza();
         $pizza->name = $validated['name'];
         $pizza->image = $validated['image'];
-        $pizza->price = array_sum(
+        $image = $request->file('image');
+        $imagePath = $image->store('images/pizzas', 'public');
+        $pizza->image = $imagePath;
+        $pizza->selling_price = array_sum(
             array_map(fn($ingredientId) => \App\Models\Ingredient::find($ingredientId)->cost_price, $validated['ingredients'])
         ) * 1.5; 
         $pizza->save();

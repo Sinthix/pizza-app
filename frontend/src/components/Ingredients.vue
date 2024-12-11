@@ -9,7 +9,7 @@
         <div class="col-md-4" v-for="ingredient in ingredients" :key="ingredient.id">
           <div class="card mb-4">
             <img
-              :src="ingredient.image_url"
+              :src="ingredient.image"
               :alt="ingredient.name"
               class="card-img-top"
               style="height: 200px; object-fit: cover"

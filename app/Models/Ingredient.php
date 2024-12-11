@@ -9,4 +9,9 @@ class Ingredient extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'cost_price', 'image', 'randomization_percentage'];
+
+    public function pizzas()
+    {
+        return $this->belongsToMany(Pizza::class, 'ingredient_pizza');
+    }
 }

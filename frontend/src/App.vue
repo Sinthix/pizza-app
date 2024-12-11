@@ -18,7 +18,7 @@
       </div>
     </header>
 
-    <div class="container py-5">
+    <div class="container">
       <router-view></router-view>
     </div>
 
