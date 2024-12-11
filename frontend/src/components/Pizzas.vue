@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="loading" class="loader-container">
+      <div class="loader"></div>
+    </div>
+    <div v-else>
     <div class="d-flex justify-content-between mb-3">
         <h2>Pizzas</h2>
         <div>
@@ -32,6 +36,7 @@
   
       <PizzaModal v-if="showCreatePizzaModalFlag" @close="showCreatePizzaModal" />
     </div>
+    </div>
   </template>
   
   <script>
@@ -46,6 +51,7 @@
       return {
         pizzas: [],
         showCreatePizzaModalFlag: false,
+        loading: false,
       };
     },
     methods: {
@@ -63,6 +69,7 @@
       },
     },
     async mounted() {
+      this.loading = true;
       const store = usePizzasStore();
       this.pizzas = await store.fetchPizzas();
       try {
@@ -70,6 +77,8 @@
         this.pizzas = store.pizzas;
       } catch (error) {
         console.error('Failed to fetch pizzas:', error);
+      } finally {
+        this.loading = false;
       }
     },
   };

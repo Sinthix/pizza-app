@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="loading" class="loader-container">
+      <div class="loader"></div>
+    </div>
+    <div v-else>
     <div class="d-flex justify-content-between mb-3">
       <h2>Ingredients</h2>
       <button class="btn btn-success" @click="showCreateIngredientModal">Create Ingredient</button>
@@ -30,6 +34,7 @@
 
     <IngredientModal v-if="showCreateIngredientModalFlag" @close="showCreateIngredientModal" />
   </div>
+  </div>
 </template>
 
 <script>
@@ -44,6 +49,7 @@ export default {
     return {
       ingredients: [],
       showCreateIngredientModalFlag: false,
+      loading: false,
     };
   },
   methods: {
@@ -56,12 +62,15 @@ export default {
     },
   },
   async mounted() {
+    this.loading = true;
     const store = useIngredientsStore();
     try {
       await store.fetchIngredients();
       this.ingredients = store.ingredients;
     } catch (error) {
       console.error('Failed to fetch ingredients:', error);
+    } finally {
+      this.loading = false;
     }
   },
 };
