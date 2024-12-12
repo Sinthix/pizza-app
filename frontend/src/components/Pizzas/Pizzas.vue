@@ -16,7 +16,7 @@
           <div class="col-md-4" v-for="pizza in pizzas" :key="pizza.id">
             <div class="card mb-4">
               <img
-                :src="pizza.image"
+                :src="getPizzaImage(pizza.image)"
                 :alt="pizza.name"
                 class="card-img-top"
                 style="height: 200px; object-fit: cover"
@@ -81,7 +81,12 @@
         this.showPizzaDetailsFlag = true;
       },
       showCreatePizzaModal() {
+        this.currentPizza = null;
+        
         this.showCreatePizzaModalFlag = !this.showCreatePizzaModalFlag;
+        if(!this.showCreatePizzaModalFlag) {
+          this.getPizzas();
+        }
       },
       showEditPizzaModal(pizza) {
       this.currentPizza = pizza;
@@ -105,8 +110,7 @@
         }
       }
     },
-    },
-    async mounted() {
+    async getPizzas() {
       this.loading = true;
       const store = usePizzasStore();
       this.pizzas = await store.fetchPizzas();
@@ -118,6 +122,23 @@
       } finally {
         this.loading = false;
       }
+    },
+      async createRandomPizza() {
+        try {
+          const store = usePizzasStore();
+          const randomPizza = await store.generateRandomPizza();
+          alert(`Random pizza created: ${randomPizza.name}`);
+        } catch (error) {
+          alert('Failed to create random pizza.');
+        }
+      },
+      getPizzaImage(im) {
+        if(im.split('/').length > 4) return im
+        return 'https://picsum.photos/200'
+      }
+    },
+    async mounted() {
+      await this.getPizzas();
     },
   };
   </script>

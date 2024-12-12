@@ -32,7 +32,9 @@
                       type="checkbox"
                       :id="'ingredient-' + ingredient.id"
                       :value="ingredient"
-                      v-model="selectedIngredients"
+                      :checked="isIngredientSelected(ingredient)"
+                      @change="toggleIngredientSelection(ingredient)"
+                      
                       :disabled="isIngredientDisabled(ingredient)"
                     />
                     <label
@@ -59,6 +61,9 @@
               </div>
   
               <div class="mb-3">
+                <div v-if="editMode">
+                  <img :src="pizza.image" class="edit-pizza-img" alt="">
+                </div>
                 <label for="pizza-image" class="form-label">Image</label>
                 <input
                   type="file"
@@ -101,7 +106,6 @@
         selectedIngredients: [],
         editMode: false,
         sellingPrice: 0,
-        formData: null,
       };
     },
     computed: {
@@ -125,14 +129,14 @@
       if (this.pizza) {
         this.editMode = true;
         try {
-      this.pizzaData = {
-        ...this.pizza
-      };
-      this.selectedIngredients = [...this.pizza.ingredients];
-      
-    } catch (error) {
-      console.error('Error mapping pizza ingredients:', error);
-    }
+          this.pizzaData = {
+            ...this.pizza
+          };
+          this.selectedIngredients = [...this.pizza.ingredients];
+          
+        } catch (error) {
+          console.error('Error mapping pizza ingredients:', error);
+        }
       }
     },
     methods: {
@@ -164,19 +168,43 @@
           
           const store = usePizzasStore();
           if (this.editMode) {
+            console.log(this.pizzaData)
             await store.updatePizza(this.pizzaData);
             alert('Pizza updated successfully!');
           } else {
             await store.addPizza(this.pizzaData);
             alert('Pizza created successfully!');
           }
+          this.pizzaData = {};
+          this.editMode = false;
+          this.selectedIngredients = [];
+          this.sellingPrice = 0;
+
           this.$emit('close');
+
         } catch (error) {
           console.error(error);
           alert('Failed to save pizza.');
         }
       },
+      isIngredientSelected(ingredient) {
+        return this.selectedIngredients.some(
+          (selected) => selected.id === ingredient.id
+        );
+      },
+      toggleIngredientSelection(ingredient) {
+        const index = this.selectedIngredients.findIndex(
+          (selected) => selected.id === ingredient.id
+        );
+
+        if (index !== -1) {
+          this.selectedIngredients.splice(index, 1);
+        } else if (this.selectedIngredients.length < 8) {
+          this.selectedIngredients.push(ingredient);
+        }
+      },
       handlePizzaImageChange(event) {
+        this.pizzaData.image = null;
         const file = event.target.files[0];
         if (file) {
           this.pizzaData.image = file;
@@ -189,6 +217,9 @@
   <style scoped>
   .modal {
     background-color: rgba(0, 0, 0, 0.5);
+  }
+  .edit-pizza-img {
+    width: 20%;
   }
   </style>
   

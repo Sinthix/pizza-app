@@ -26,6 +26,30 @@ export const usePizzasStore = defineStore('pizzas', {
         console.error('Error adding pizza:', error);
       }
     },
+    async updatePizza(newPizza) {
+      try {
+        const response = await axios.put('http://localhost:8000/api/pizzas/' + newPizza.id, newPizza, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    },
+    async generateRandomPizza() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/pizzas/random');
+        const newPizza = response.data;
+        this.pizzas.push(newPizza);
+        return newPizza;
+      } catch (error) {
+        console.error('Error generating random pizza:', error);
+        throw error;
+      }
+    },
     async deletePizza(id) {
       try {
         await axios.delete(`http://localhost:8000/api/pizzas/${id}`);
