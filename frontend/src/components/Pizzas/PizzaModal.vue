@@ -124,8 +124,15 @@
         }
       if (this.pizza) {
         this.editMode = true;
-        this.pizzaData = { ...this.pizza };
-        this.selectedIngredients = this.pizzaData.ingredients;
+        try {
+      this.pizzaData = {
+        ...this.pizza
+      };
+      this.selectedIngredients = [...this.pizza.ingredients];
+      
+    } catch (error) {
+      console.error('Error mapping pizza ingredients:', error);
+    }
       }
     },
     methods: {

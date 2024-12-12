@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import Pizzas from './Pizzas.vue';
-import Ingredients from './Ingredients.vue';
+import Pizzas from './Pizzas/Pizzas.vue';
+import Ingredients from './Ingredients/Ingredients.vue';
 
 export default {
   components: {
