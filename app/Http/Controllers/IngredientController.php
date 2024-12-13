@@ -67,6 +67,14 @@ class IngredientController extends Controller
 
         $ingredient->update();
 
+        $pizzas = $ingredient->pizzas;
+
+        foreach ($pizzas as $pizza) {
+            $totalCost = $pizza->ingredients->sum('cost_price');
+            $pizza->selling_price = $totalCost * 1.5; 
+            $pizza->save();
+        }
+
         return response()->json($ingredient);
     }
 
