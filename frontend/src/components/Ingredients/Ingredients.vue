@@ -23,6 +23,7 @@
               <p class="card-text">Cost Price: {{ ingredient.cost_price }}€</p>
               <p class="card-text">Randomization Percentage: {{ ingredient.randomisation_percentage }}%</p>
               <button class="btn btn-info me-2" @click="showIngredientDetails(ingredient)">View Details</button>
+              <button class="btn btn-danger" @click="confirmDeleteIngredient(ingredient.id)">Delete</button>
             </div>
           </div>
         </div>
@@ -80,6 +81,20 @@ export default {
     showIngredientDetails(ingredient) {
         this.currentIngredient = ingredient;
         this.showIngredientDetailsFlag = true;
+    },
+    async confirmDeleteIngredient(ingredientId) {
+      const confirmDelete = confirm('Are you sure you want to delete this ingredient?');
+      if (confirmDelete) {
+        try {
+          const store = useIngredientsStore();
+          await store.deleteIngredient(ingredientId);
+          this.ingredients = this.ingredients.filter((ingredient) => ingredient.id !== ingredientId);
+          alert('Ingredient deleted successfully!');
+        } catch (error) {
+          console.error('Failed to delete ingredient:', error);
+          alert('Failed to delete ingredient.');
+        }
+      }
     },
   },
   async mounted() {
