@@ -3,30 +3,26 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Pizza Details</h5>
+            <h5 class="modal-title">Ingredient Details</h5>
             <button type="button" class="btn-close" @click="$emit('close')" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <h3>{{ pizza.name }}</h3>
+              <h3>{{ ingredient.name }}</h3>
               <img
-                :src="pizza.image"
+                :src="ingredient.image"
                 alt="Pizza image"
                 class="img-fluid mb-3"
                 style="max-height: 300px; object-fit: cover"
               />
             </div>
             <div class="mb-3">
-              <h4>Ingredients</h4>
-              <ul>
-                <li v-for="ingredient in pizza.ingredients" :key="ingredient.id">
-                  {{ ingredient.name }} (Cost: {{ ingredient.cost_price }}€)
-                </li>
-              </ul>
+              <h4>Selling Price</h4>
+              <p>{{ ingredient.cost_price }}€</p>
             </div>
             <div class="mb-3">
-              <h4>Selling Price</h4>
-              <p>{{ pizza.selling_price }}€</p>
+              <h4>Randomization Price</h4>
+              <p>{{ ingredient.randomisation_percentage }}€</p>
             </div>
           </div>
           <div class="modal-footer">
@@ -40,7 +36,7 @@
   <script>
   export default {
     props: {
-      pizza: {
+      ingredient: {
         type: Object,
         required: true,
       },

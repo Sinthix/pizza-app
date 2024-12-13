@@ -22,7 +22,7 @@
               <h5 class="card-title">{{ ingredient.name }}</h5>
               <p class="card-text">Cost Price: ${{ ingredient.cost_price }}</p>
               <p class="card-text">Randomization Percentage: {{ ingredient.randomization_percentage }}%</p>
-              <button class="btn btn-info" @click="viewIngredientDetails(ingredient.id)">View Details</button>
+              <button class="btn btn-info me-2" @click="showIngredientDetails(ingredient)">View Details</button>
             </div>
           </div>
         </div>
@@ -32,7 +32,16 @@
       <p>No ingredients available. Please create one.</p>
     </div>
 
-    <IngredientModal v-if="showCreateIngredientModalFlag" @close="showCreateIngredientModal" />
+    <IngredientModal 
+      v-if="showCreateIngredientModalFlag" 
+      @close="showCreateIngredientModal" 
+      />
+  
+    <IngredientDetails
+        v-if="showIngredientDetailsFlag"
+        :ingredient="currentIngredient"
+        @close="closeIngredientDetailsModal"
+      />
   </div>
   </div>
 </template>
@@ -40,16 +49,20 @@
 <script>
 import { useIngredientsStore } from '@/stores/useIngredientsStore';
 import IngredientModal from './IngredientModal.vue';
+import IngredientDetails from './IngredientDetails.vue';
 
 export default {
   components: {
     IngredientModal,
+    IngredientDetails
   },
   data() {
     return {
       ingredients: [],
       showCreateIngredientModalFlag: false,
       loading: false,
+      showIngredientDetailsFlag: false,
+      currentIngredient: false
     };
   },
   methods: {
@@ -59,6 +72,14 @@ export default {
     },
     showCreateIngredientModal() {
       this.showCreateIngredientModalFlag = !this.showCreateIngredientModalFlag;
+    },
+    closeIngredientDetailsModal() {
+      this.showIngredientDetailsFlag = false;
+      this.currentIngredient = null;
+    },
+    showIngredientDetails(ingredient) {
+        this.currentIngredient = ingredient;
+        this.showIngredientDetailsFlag = true;
     },
   },
   async mounted() {
