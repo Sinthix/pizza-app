@@ -47,15 +47,25 @@ class IngredientController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|min:2|max:30|regex:/^[^{}"\[\]\.!]+$/|unique:ingredients,name,' . $id,
-            'cost_price' => 'required|numeric|between:0,99999.99',
-            'image' => 'nullable|url',
-            'randomization_percentage' => 'required|integer|between:0,100',
-        ]);
-
         $ingredient = Ingredient::findOrFail($id);
-        $ingredient->update($validated);
+        $ingredient->name = $request->input('name', $ingredient->name);
+        $ingredient->cost_price = $request->input('cost_price', $ingredient->cost_price);
+        $ingredient->randomisation_percentage = $request->input('randomisation_percentage', $ingredient->randomisation_percentage);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+    
+            if ($image->isValid() && in_array($image->extension(), ['jpg', 'jpeg', 'png', 'gif'])) {
+                if ($ingredient->image) {
+                    Storage::disk('public')->delete($ingredient->image);
+                }
+    
+                $path = $image->store('images/ingredients', 'public');
+                $ingredient->image = $path;
+            }
+        }
+
+        $ingredient->update();
 
         return response()->json($ingredient);
     }

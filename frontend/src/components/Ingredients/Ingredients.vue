@@ -23,6 +23,7 @@
               <p class="card-text">Cost Price: {{ ingredient.cost_price }}€</p>
               <p class="card-text">Randomization Percentage: {{ ingredient.randomisation_percentage }}%</p>
               <button class="btn btn-info me-2" @click="showIngredientDetails(ingredient)">View Details</button>
+              <button class="btn btn-warning me-2" @click="showEditIngredientModal(ingredient)">Edit</button>
               <button class="btn btn-danger" @click="confirmDeleteIngredient(ingredient.id)">Delete</button>
             </div>
           </div>
@@ -35,6 +36,7 @@
 
     <IngredientModal 
       v-if="showCreateIngredientModalFlag" 
+      :ingredient="currentIngredient"
       @close="showCreateIngredientModal" 
       />
   
@@ -73,6 +75,10 @@ export default {
     },
     showCreateIngredientModal() {
       this.showCreateIngredientModalFlag = !this.showCreateIngredientModalFlag;
+    },
+    showEditIngredientModal(ingredient) {
+        this.currentIngredient = ingredient;
+        this.showCreateIngredientModalFlag = true;
     },
     closeIngredientDetailsModal() {
       this.showIngredientDetailsFlag = false;

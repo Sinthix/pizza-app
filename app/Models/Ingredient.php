@@ -8,7 +8,7 @@ class Ingredient extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'cost_price', 'image', 'randomization_percentage'];
+    protected $fillable = ['name', 'cost_price', 'image', 'randomisation_percentage'];
 
     public function pizzas()
     {

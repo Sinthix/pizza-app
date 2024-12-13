@@ -89,54 +89,54 @@
         }
       },
       showEditPizzaModal(pizza) {
-      this.currentPizza = pizza;
-      this.showCreatePizzaModalFlag = true;
-    },
-    closePizzaDetailsModal() {
-      this.showPizzaDetailsFlag = false;
-      this.currentPizza = null;
-    },
-    async confirmDeletePizza(pizzaId) {
-      const confirmDelete = confirm('Are you sure you want to delete this pizza?');
-      if (confirmDelete) {
-        try {
-          const store = usePizzasStore();
-          await store.deletePizza(pizzaId);
-          this.pizzas = this.pizzas.filter((pizza) => pizza.id !== pizzaId);
-          alert('Pizza deleted successfully!');
-        } catch (error) {
-          console.error('Failed to delete pizza:', error);
-          alert('Failed to delete pizza.');
-        }
-      }
-    },
-    async getPizzas() {
-      this.loading = true;
-      const store = usePizzasStore();
-      this.pizzas = await store.fetchPizzas();
-      try {
-        await store.fetchPizzas();
-        this.pizzas = store.pizzas;
-      } catch (error) {
-        console.error('Failed to fetch pizzas:', error);
-      } finally {
-        this.loading = false;
-      }
-    },
-      async createRandomPizza() {
-        try {
-          const store = usePizzasStore();
-          const randomPizza = await store.generateRandomPizza();
-          alert(`Random pizza created: ${randomPizza.name}`);
-        } catch (error) {
-          alert('Failed to create random pizza.');
+        this.currentPizza = pizza;
+        this.showCreatePizzaModalFlag = true;
+      },
+      closePizzaDetailsModal() {
+        this.showPizzaDetailsFlag = false;
+        this.currentPizza = null;
+      },
+      async confirmDeletePizza(pizzaId) {
+        const confirmDelete = confirm('Are you sure you want to delete this pizza?');
+        if (confirmDelete) {
+          try {
+            const store = usePizzasStore();
+            await store.deletePizza(pizzaId);
+            this.pizzas = this.pizzas.filter((pizza) => pizza.id !== pizzaId);
+            alert('Pizza deleted successfully!');
+          } catch (error) {
+            console.error('Failed to delete pizza:', error);
+            alert('Failed to delete pizza.');
+          }
         }
       },
-      getPizzaImage(im) {
-        if(im.split('/').length > 4) return im
-        return 'https://picsum.photos/200'
-      }
-    },
+      async getPizzas() {
+        this.loading = true;
+        const store = usePizzasStore();
+        this.pizzas = await store.fetchPizzas();
+        try {
+          await store.fetchPizzas();
+          this.pizzas = store.pizzas;
+        } catch (error) {
+          console.error('Failed to fetch pizzas:', error);
+        } finally {
+          this.loading = false;
+        }
+      },
+        async createRandomPizza() {
+          try {
+            const store = usePizzasStore();
+            const randomPizza = await store.generateRandomPizza();
+            alert(`Random pizza created: ${randomPizza.name}`);
+          } catch (error) {
+            alert('Failed to create random pizza.');
+          }
+        },
+        getPizzaImage(im) {
+          if(im.split('/').length > 4) return im
+          return 'https://picsum.photos/200'
+        }
+      },
     async mounted() {
       await this.getPizzas();
     },

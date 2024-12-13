@@ -41,7 +41,7 @@
                       class="form-check-label"
                       :for="'ingredient-' + ingredient.id"
                     >
-                      {{ ingredient.name }} (${{ ingredient.cost_price }})
+                      {{ ingredient.name }} ({{ ingredient.cost_price }}€)
                     </label>
                   </div>
                   <div v-if="selectedIngredients.length >= 8" class="text-danger mt-2">
@@ -56,7 +56,7 @@
               <div class="mb-3">
                 <label class="form-label">Selling Price</label>
                 <p class="form-control">
-                  ${{ sellingPrice }}
+                  {{ sellingPrice }}€
                 </p>
               </div>
   

@@ -26,10 +26,10 @@ export const useIngredientsStore = defineStore('ingredients', {
         console.error('Error adding pizza:', error);
       }
     },
-    async updateIngredient(id, ingredient) {
+    async updateIngredient(ingredient) {
       try {
-        const response = await axios.put(`http://localhost:8000/api/ingredients/${id}`, ingredient);
-        const index = this.ingredients.findIndex(i => i.id === id);
+        const response = await axios.put(`http://localhost:8000/api/ingredients/${ingredient.id}`, ingredient);
+        const index = this.ingredients.findIndex(i => i.id === ingredient.id);
         if (index !== -1) this.ingredients[index] = response.data;
       } catch (error) {
         console.error('Error updating ingredient:', error);
