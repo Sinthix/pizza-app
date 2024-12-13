@@ -16,10 +16,14 @@ export const useIngredientsStore = defineStore('ingredients', {
     },
     async createIngredient(ingredient) {
       try {
-        const response = await axios.post('http://localhost:8000/api/ingredients', ingredient);
+        const response = await axios.post('http://localhost:8000/api/ingredients', ingredient, {
+          headers: {
+          'Content-Type': 'multipart/form-data',
+          }
+        })
         this.ingredients.push(response.data);
       } catch (error) {
-        console.error('Error creating ingredient:', error);
+        console.error('Error adding pizza:', error);
       }
     },
     async updateIngredient(id, ingredient) {

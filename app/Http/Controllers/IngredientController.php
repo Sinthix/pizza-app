@@ -23,18 +23,18 @@ class IngredientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|min:2|max:30|unique:ingredients,name|regex:/^[^{}"\[\]\.!]+$/',
             'cost_price' => 'required|numeric|between:0,99999.99',
-            'image' => 'nullable|url',
-            'randomization_percentage' => 'required|integer|between:0,100',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'randomisation_percentage' => 'integer|between:0,100',
         ]);
         
         $ingredient = new Ingredient();
         $ingredient->name = $validated['name'];
         $ingredient->image = $validated['image'];
         $image = $request->file('image');
-        $imagePath = $image->store('images/pizzas', 'public');
+        $imagePath = $image->store('images/ingredients', 'public');
         $ingredient->image = $imagePath;
         $ingredient->cost_price = $validated['cost_price'];
-        $ingredient->randomization_percentage = $validated['randomization_percentage'];
+        $ingredient->randomisation_percentage = $validated['randomisation_percentage'];
         $ingredient->save();
         return response()->json($ingredient, 201);
     }

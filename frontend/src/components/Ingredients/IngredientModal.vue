@@ -35,7 +35,7 @@
                   type="number"
                   class="form-control"
                   id="ingredient-percentage"
-                  v-model="ingredientData.percentage"
+                  v-model="ingredientData.randomisation_percentage"
                   min="0"
                   max="100"
                   required
@@ -73,7 +73,7 @@
         ingredientData: {
           name: '',
           cost_price: '',
-          percentage: 0,
+          randomisation_percentage: 0,
           image: null,
         },
         editMode: false,

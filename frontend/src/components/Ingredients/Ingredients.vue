@@ -20,8 +20,8 @@
             />
             <div class="card-body">
               <h5 class="card-title">{{ ingredient.name }}</h5>
-              <p class="card-text">Cost Price: ${{ ingredient.cost_price }}</p>
-              <p class="card-text">Randomization Percentage: {{ ingredient.randomization_percentage }}%</p>
+              <p class="card-text">Cost Price: {{ ingredient.cost_price }}€</p>
+              <p class="card-text">Randomization Percentage: {{ ingredient.randomisation_percentage }}%</p>
               <button class="btn btn-info me-2" @click="showIngredientDetails(ingredient)">View Details</button>
             </div>
           </div>
