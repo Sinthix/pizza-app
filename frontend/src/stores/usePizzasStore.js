@@ -17,7 +17,9 @@ export const usePizzasStore = defineStore('pizzas', {
     async addPizza(newPizza) {
       try {
         const response = await axios.post('http://localhost:8000/api/pizzas', newPizza, {
-          
+          headers: {
+            'content-type': 'multipart/form-data'
+          }
         })
         this.pizzas.push(response.data);
       } catch (error) {

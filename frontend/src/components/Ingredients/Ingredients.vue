@@ -6,7 +6,7 @@
     <div v-else>
     <div class="d-flex justify-content-between mb-3">
       <h2>Ingredients</h2>
-      <button class="btn btn-success" @click="showCreateIngredientModal">Create Ingredient</button>
+      <button class="btn btn-outline-dar" @click="showCreateIngredientModal">Create Ingredient</button>
     </div>
     <div v-if="ingredients && ingredients.length > 0">
       <div class="row">
@@ -22,9 +22,9 @@
               <h5 class="card-title">{{ ingredient.name }}</h5>
               <p class="card-text">Cost Price: {{ ingredient.cost_price }}€</p>
               <p class="card-text">Randomization Percentage: {{ ingredient.randomisation_percentage }}%</p>
-              <button class="btn btn-info me-2" @click="showIngredientDetails(ingredient)">View Details</button>
-              <button class="btn btn-warning me-2" @click="showEditIngredientModal(ingredient)">Edit</button>
-              <button class="btn btn-danger" @click="confirmDeleteIngredient(ingredient.id)">Delete</button>
+              <button class="btn btn-outline-info me-2" @click="showIngredientDetails(ingredient)">View Details</button>
+              <button class="btn btn-outline-secondary me-2" @click="showEditIngredientModal(ingredient)">Edit</button>
+              <button class="btn btn-outline-danger" @click="confirmDeleteIngredient(ingredient.id)">Delete</button>
             </div>
           </div>
         </div>

@@ -7,8 +7,8 @@
     <div class="d-flex justify-content-between mb-3">
         <h2>Pizzas</h2>
         <div>
-          <button class="btn btn-primary" @click="createRandomPizza">Generate Random Pizza</button>
-          <button class="btn btn-success" @click="showCreatePizzaModal">Create Pizza</button>
+          <button class="btn btn-outline-dark" @click="createRandomPizza">Generate Random Pizza</button>
+          <button class="btn btn-outline-dark" @click="showCreatePizzaModal">Create Pizza</button>
         </div>
       </div>
       <div v-if="pizzas && pizzas.length > 0">
@@ -24,9 +24,9 @@
               <div class="card-body">
                 <h5 class="card-title">{{ pizza.name }}</h5>
                 <p class="card-text">Price: ${{ pizza.selling_price }}</p>
-                <button class="btn btn-info me-2" @click="showPizzaDetails(pizza)">View Details</button>
-                <button class="btn btn-warning me-2" @click="showEditPizzaModal(pizza)">Edit</button>
-                <button class="btn btn-danger" @click="confirmDeletePizza(pizza.id)">Delete</button>
+                <button class="btn btn-outline-info me-2" @click="showPizzaDetails(pizza)">View Details</button>
+                <button class="btn btn-outline-secondary me-2" @click="showEditPizzaModal(pizza)">Edit</button>
+                <button class="btn btn-outline-danger" @click="confirmDeletePizza(pizza.id)">Delete</button>
               </div>
             </div>
           </div>
