@@ -168,7 +168,6 @@
           
           const store = usePizzasStore();
           if (this.editMode) {
-            console.log(this.pizzaData)
             await store.updatePizza(this.pizzaData);
             alert('Pizza updated successfully!');
           } else {

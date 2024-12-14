@@ -22,12 +22,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/pizzas/{id}', [PizzaController::class, 'update']); 
     Route::delete('/pizzas/{id}', [PizzaController::class, 'destroy']);
     Route::post('/pizzas/random', [PizzaController::class, 'generateRandomPizza']);
+    Route::put('/pizzas/{id}/image', [PizzaController::class, 'updateImage']);
     
     Route::get('/ingredients', [IngredientController::class, 'index']);
     Route::post('/ingredients', [IngredientController::class, 'store']); 
     Route::get('/ingredients/{id}', [IngredientController::class, 'show']);
     Route::put('/ingredients/{id}', [IngredientController::class, 'update']);
-    Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy']); 
+    Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy']);
+    Route::put('/ingredients/{id}/image', [IngredientController::class, 'updateImage']); 
     
 });
 

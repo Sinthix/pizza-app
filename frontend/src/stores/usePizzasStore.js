@@ -17,9 +17,7 @@ export const usePizzasStore = defineStore('pizzas', {
     async addPizza(newPizza) {
       try {
         const response = await axios.post('http://localhost:8000/api/pizzas', newPizza, {
-          headers: {
-          'Content-Type': 'multipart/form-data',
-          }
+          
         })
         this.pizzas.push(response.data);
       } catch (error) {
@@ -28,11 +26,16 @@ export const usePizzasStore = defineStore('pizzas', {
     },
     async updatePizza(newPizza) {
       try {
-        const response = await axios.put('http://localhost:8000/api/pizzas/' + newPizza.id, newPizza, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.put('http://localhost:8000/api/pizzas/' + newPizza.id, newPizza);
+        if(typeof newPizza.image === 'object'){
+          try {
+            await this.updatePizzaImage(newPizza.id, newPizza.image)
+          } catch (error) {
+            console.error(error);
+            throw error;
+          }
+        }
+        
         return response.data;
       } catch (error) {
         console.error(error);
@@ -48,6 +51,21 @@ export const usePizzasStore = defineStore('pizzas', {
       } catch (error) {
         console.error('Error generating random pizza:', error);
         throw error;
+      }
+    },
+    async updatePizzaImage(pizzaId, imageFile) {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+    
+      try {
+        const response = await axios.put(`http://localhost:8000/api/pizzas/${pizzaId}/image`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('Pizza image updated:', response.data);
+      } catch (error) {
+        console.error('Failed to update pizza image:', error);
       }
     },
     async deletePizza(id) {

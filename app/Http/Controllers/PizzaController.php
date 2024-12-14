@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pizza;
 use App\Models\Ingredient;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 
 class PizzaController extends Controller
@@ -57,19 +57,6 @@ class PizzaController extends Controller
 
         $pizza->name = $request->input('name', $pizza->name);
         $pizza->selling_price = $request->input('selling_price', $pizza->selling_price);
-        
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-    
-            if ($image->isValid() && in_array($image->extension(), ['jpg', 'jpeg', 'png', 'gif'])) {
-                if ($pizza->image) {
-                    Storage::disk('public')->delete($pizza->image);
-                }
-    
-                $path = $image->store('images/pizzas', 'public');
-                $pizza->image = $path;
-            }
-        }
 
         $pizza->update();
 
@@ -117,6 +104,35 @@ class PizzaController extends Controller
         $pizza->ingredients()->sync($selectedIngredients->pluck('id'));
 
         return response()->json($pizza->load('ingredients'), 201);
+    }
+
+    public function updateImage(Request $request, $id)
+    {
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if (!$request->hasFile('image')) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
+
+        $image = $request->file('image');
+
+        if (!$image->isValid()) {
+            return response()->json(['error' => 'Uploaded file is invalid'], 400);
+        }
+
+        $pizza = Pizza::findOrFail($id);
+
+        if ($pizza->image) {
+            Storage::disk('public')->delete($pizza->image);
+        }
+
+        $path = $image->store('images/pizzas', 'public');
+        $pizza->image = $path;
+        $pizza->save();
+
+        return response()->json(['message' => 'Image updated successfully', 'pizza' => $pizza]);
     }
 
 

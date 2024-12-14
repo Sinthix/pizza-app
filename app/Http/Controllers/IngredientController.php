@@ -78,6 +78,35 @@ class IngredientController extends Controller
         return response()->json($ingredient);
     }
 
+    public function updateImage(Request $request, $id)
+    {
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if (!$request->hasFile('image')) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
+
+        $image = $request->file('image');
+
+        if (!$image->isValid()) {
+            return response()->json(['error' => 'Uploaded file is invalid'], 400);
+        }
+
+        $ingredient = Ingredient::findOrFail($id);
+
+        if ($ingredient->image) {
+            Storage::disk('public')->delete($ingredient->image);
+        }
+
+        $path = $image->store('images/ingredients', 'public');
+        $ingredient->image = $path;
+        $ingredient->save();
+
+        return response()->json(['message' => 'Image updated successfully', 'pizza' => $pizza]);
+    }
+
     public function destroy($id)
     {
         $ingredient = Ingredient::findOrFail($id);

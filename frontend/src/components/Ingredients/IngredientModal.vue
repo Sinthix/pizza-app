@@ -96,6 +96,10 @@
             await store.createIngredient(this.ingredientData);
             alert('Ingredient created successfully!');
           }
+
+          this.ingredient = null;
+          this.ingredientData = {};
+          this.editMode = false;
           this.$emit('close'); 
         } catch (error) {
           console.error(error);

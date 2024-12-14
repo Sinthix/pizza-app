@@ -23,16 +23,40 @@ export const useIngredientsStore = defineStore('ingredients', {
         })
         this.ingredients.push(response.data);
       } catch (error) {
-        console.error('Error adding pizza:', error);
+        console.error('Error adding ingredient:', error);
       }
     },
     async updateIngredient(ingredient) {
       try {
         const response = await axios.put(`http://localhost:8000/api/ingredients/${ingredient.id}`, ingredient);
+        if(typeof ingredient.image === 'object'){
+          try {
+            await this.updateIngredientImage(ingredient.id, ingredient.image)
+          } catch (error) {
+            console.error(error);
+            throw error;
+          }
+        }
+        
         const index = this.ingredients.findIndex(i => i.id === ingredient.id);
         if (index !== -1) this.ingredients[index] = response.data;
       } catch (error) {
         console.error('Error updating ingredient:', error);
+      }
+    },
+    async updateIngredientImage(ingredientId, imageFile) {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+    
+      try {
+        const response = await axios.put(`http://localhost:8000/api/ingredients/${ingredientId}/image`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('Pizza image updated:', response.data);
+      } catch (error) {
+        console.error('Failed to update pizza image:', error);
       }
     },
     async deleteIngredient(id) {
