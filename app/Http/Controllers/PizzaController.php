@@ -15,7 +15,9 @@ class PizzaController extends Controller
         $pizzas = Pizza::with('ingredients')->get(); 
 
         $pizzas->each(function ($pizza) {
-            $pizza->image = asset('storage/' . $pizza->image);
+            $pizza->image = $pizza->image 
+                ? asset('storage/' . $pizza->image) 
+                : asset('storage/images/default.png');
         });
         return response()->json($pizzas);
     }
@@ -47,6 +49,9 @@ class PizzaController extends Controller
     public function show($id)
     {
         $pizza = Pizza::with('ingredients')->findOrFail($id);
+        $pizza->image = $pizza->image 
+                ? asset('storage/' . $pizza->image) 
+                : asset('storage/images/default.png');
         return response()->json($pizza);
     }
 
@@ -75,22 +80,21 @@ class PizzaController extends Controller
             return response()->json(['error' => 'No ingredients available for randomization'], 400);
         }
 
-        $selectedIngredients = collect();
+        $weightedPool = collect();
 
         foreach ($ingredients as $ingredient) {
-            $randomChance = mt_rand(1, 100);
+            $weight = $ingredient->randomisation_percentage;
 
-            if ($randomChance <= $ingredient->randomisation_percentage) {
-                $selectedIngredients->push($ingredient);
+            for ($i = 0; $i < $weight; $i++) {
+                $weightedPool->push($ingredient);
             }
         }
 
-        $ingredientCount = $selectedIngredients->count();
-        if ($ingredientCount < 1) {
-            $selectedIngredients = $ingredients->random(1);
-        } elseif ($ingredientCount > 5) {
-            $selectedIngredients = $selectedIngredients->random(5);
+        if ($weightedPool->isEmpty()) {
+            return response()->json(['error' => 'No ingredients selected for randomization'], 400);
         }
+
+        $selectedIngredients = $weightedPool->unique('id')->random(rand(1, min(5, $weightedPool->unique('id')->count())));
 
         $totalIngredientCost = $selectedIngredients->sum('cost_price');
 

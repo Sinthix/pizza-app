@@ -11,8 +11,10 @@ class IngredientController extends Controller
         $ingredients = Ingredient::all();
 
         $ingredients->each(function ($ingredient) {
-            if ($ingredient->image) {
-                $ingredient->image = asset('storage/' . $ingredient->image); // Generate the full URL for the image
+            if (!$ingredient->image) {
+                $ingredient->image = asset('storage/' . $ingredient->image);
+            } else {
+                $ingredient->image = asset('storage/images/default.png');
             }
         });
         return response()->json($ingredients);
@@ -42,6 +44,9 @@ class IngredientController extends Controller
     public function show($id)
     {
         $ingredient = Ingredient::findOrFail($id);
+        $ingredient->image = $ingredient->image 
+                ? asset('storage/' . $ingredient->image) 
+                : asset('storage/images/default.png');
         return response()->json($ingredient);
     }
 
@@ -110,6 +115,13 @@ class IngredientController extends Controller
     public function destroy($id)
     {
         $ingredient = Ingredient::findOrFail($id);
+
+        if ($ingredient->pizzas()->exists()) {
+            return response()->json([
+                'error' => 'Cannot delete ingredient. It is used in one or more pizzas.'
+            ], 400);
+        }
+
         $ingredient->delete();
         return response()->json(['message' => 'Ingredient deleted successfully']);
     }
