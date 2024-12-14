@@ -13,5 +13,13 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8000',
     }
-  }
+  },
+  test: {
+    globals: true,
+    setupFiles: './src/tests/setup.js',
+    environment: 'jsdom', 
+    transformMode: {
+      web: [/\.[jt]sx$/],
+    },
+  },
 });
