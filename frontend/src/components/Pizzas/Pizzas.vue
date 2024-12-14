@@ -16,7 +16,7 @@
           <div class="col-md-4" v-for="pizza in pizzas" :key="pizza.id">
             <div class="card mb-4">
               <img
-                :src="getPizzaImage(pizza.image)"
+                :src="pizza.image"
                 :alt="pizza.name"
                 class="card-img-top"
                 style="height: 200px; object-fit: cover"
@@ -52,6 +52,7 @@
   </template>
   
   <script>
+  import { useToast } from 'vue-toastification';
   import { usePizzasStore } from '@/stores/usePizzasStore';
   import PizzaModal from './PizzaModal.vue';
   import PizzaDetails from './PizzaDetails.vue';
@@ -71,11 +72,6 @@
       };
     },
     methods: {
-      async createRandomPizza() {
-        const store = usePizzasStore();
-        const randomPizza = await store.generateRandomPizza();
-        this.pizzas.push(randomPizza);
-      },
       showPizzaDetails(pizza) {
         this.currentPizza = pizza;
         this.showPizzaDetailsFlag = true;
@@ -97,44 +93,44 @@
         this.currentPizza = null;
       },
       async confirmDeletePizza(pizzaId) {
+        const toast = useToast();
         const confirmDelete = confirm('Are you sure you want to delete this pizza?');
         if (confirmDelete) {
           try {
             const store = usePizzasStore();
             await store.deletePizza(pizzaId);
             this.pizzas = this.pizzas.filter((pizza) => pizza.id !== pizzaId);
-            alert('Pizza deleted successfully!');
+            toast.success('Pizza deleted successfully!');
           } catch (error) {
-            console.error('Failed to delete pizza:', error);
-            alert('Failed to delete pizza.');
+            toast.error('Failed to delete pizza.');
           }
         }
       },
       async getPizzas() {
+        const toast = useToast();
         this.loading = true;
         const store = usePizzasStore();
         this.pizzas = await store.fetchPizzas();
         try {
           await store.fetchPizzas();
           this.pizzas = store.pizzas;
+          toast.success('Pizzas loaded successfully!');
         } catch (error) {
-          console.error('Failed to fetch pizzas:', error);
+          toast.error('Failed to fetch pizzas.');
         } finally {
           this.loading = false;
         }
       },
         async createRandomPizza() {
+          const toast = useToast();
           try {
             const store = usePizzasStore();
             const randomPizza = await store.generateRandomPizza();
-            alert(`Random pizza created: ${randomPizza.name}`);
+            await this.getPizzas();
+            toast.success(`Random pizza created: ${randomPizza.name}`);
           } catch (error) {
-            alert('Failed to create random pizza.');
+            toast.error('Failed to create random pizza.');
           }
-        },
-        getPizzaImage(im) {
-          if(im.split('/').length > 4) return im
-          return 'https://picsum.photos/200'
         }
       },
     async mounted() {

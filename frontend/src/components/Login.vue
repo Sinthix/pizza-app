@@ -37,6 +37,7 @@
   
   <script>
 import axios from 'axios';
+import { useToast } from 'vue-toastification'; 
 
   export default {
     data() {
@@ -47,6 +48,7 @@ import axios from 'axios';
     },
     methods: {
       async login() {
+        const toast = useToast();
         await axios
           .post('http://localhost:8000/api/login', {
             email: this.email,
@@ -57,7 +59,7 @@ import axios from 'axios';
             this.$router.push('/management'); 
           })
           .catch((error) => {
-            console.error('Login failed:', error);
+            toast.error('Login Failed');
           });
       }
     }

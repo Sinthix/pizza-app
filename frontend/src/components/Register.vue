@@ -59,6 +59,7 @@
   
   <script>
   import axios from 'axios';
+  import { useToast } from 'vue-toastification'; 
   export default {
     data() {
       return {
@@ -70,6 +71,7 @@
     },
     methods: {
       register() {
+        const toast = useToast();
         axios
           .post('http://localhost:8000/api/register', {
             name: this.name,
@@ -82,7 +84,7 @@
             this.$router.push('/management'); 
           })
           .catch((error) => {
-            console.error('Registration failed:', error);
+            toast.error('Registration failed:');
           });
       }
     }

@@ -59,6 +59,7 @@
   </template>
   
   <script>
+  import { useToast } from 'vue-toastification'; 
   import { useIngredientsStore } from '@/stores/useIngredientsStore';
   
   export default {
@@ -87,14 +88,15 @@
     },
     methods: {
       async saveIngredient() {
+        const toast = useToast();
         try {
           const store = useIngredientsStore();
           if (this.editMode) {
             await store.updateIngredient(this.ingredientData);
-            alert('Ingredient updated successfully!');
+            toast.success('Ingredient updated successfully!');
           } else {
             await store.createIngredient(this.ingredientData);
-            alert('Ingredient created successfully!');
+            toast.success('Ingredient created successfully!');
           }
 
           this.ingredient = null;
@@ -102,8 +104,7 @@
           this.editMode = false;
           this.$emit('close'); 
         } catch (error) {
-          console.error(error);
-          alert('Failed to save ingredient.');
+          toast.error('Failed to save ingredient.');
         }
       },
       handleIngredientImageChange(event) {

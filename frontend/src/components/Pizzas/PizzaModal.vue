@@ -85,6 +85,7 @@
   </template>
   
   <script>
+  import { useToast } from 'vue-toastification'; 
   import { useIngredientsStore } from '@/stores/useIngredientsStore';
   import { usePizzasStore } from '@/stores/usePizzasStore';
   
@@ -119,12 +120,13 @@
       }
     },
     async mounted() {
+      const toast = useToast();
       const store = useIngredientsStore();
         try {
           await store.fetchIngredients();
           this.ingredients = store.ingredients;
         } catch (error) {
-          console.error('Failed to fetch ingredients:', error);
+          toast.error('Failed to fetch ingredients:', error);
         }
       if (this.pizza) {
         this.editMode = true;
@@ -135,7 +137,7 @@
           this.selectedIngredients = [...this.pizza.ingredients];
           
         } catch (error) {
-          console.error('Error mapping pizza ingredients:', error);
+          toast.error('Error mapping pizza ingredients:', error);
         }
       }
     },
@@ -158,9 +160,10 @@
         );
       },
       async savePizza() {
+        const toast = useToast();
         try {
           if (this.selectedIngredients.length === 0) {
-            alert('You must select at least one ingredient.');
+            toast.error('You must select at least one ingredient.');
             return;
           }
           this.pizzaData.ingredients = this.selectedIngredients.map(ingredient => ingredient.id);
@@ -169,10 +172,10 @@
           const store = usePizzasStore();
           if (this.editMode) {
             await store.updatePizza(this.pizzaData);
-            alert('Pizza updated successfully!');
+            toast.success('Pizza updated successfully!');
           } else {
             await store.addPizza(this.pizzaData);
-            alert('Pizza created successfully!');
+            toast.success('Pizza created successfully!');
           }
           this.pizzaData = {};
           this.editMode = false;
@@ -182,8 +185,7 @@
           this.$emit('close');
 
         } catch (error) {
-          console.error(error);
-          alert('Failed to save pizza.');
+          toast.success('Failed to save pizza.');
         }
       },
       isIngredientSelected(ingredient) {

@@ -6,7 +6,7 @@
     <div v-else>
     <div class="d-flex justify-content-between mb-3">
       <h2>Ingredients</h2>
-      <button class="btn btn-outline-dar" @click="showCreateIngredientModal">Create Ingredient</button>
+      <button class="btn btn-outline-dark" @click="showCreateIngredientModal">Create Ingredient</button>
     </div>
     <div v-if="ingredients && ingredients.length > 0">
       <div class="row">
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { useToast } from 'vue-toastification';
 import { useIngredientsStore } from '@/stores/useIngredientsStore';
 import IngredientModal from './IngredientModal.vue';
 import IngredientDetails from './IngredientDetails.vue';
@@ -69,10 +70,6 @@ export default {
     };
   },
   methods: {
-    async viewIngredientDetails(ingredientId) {
-      const ingredient = this.ingredients.find((i) => i.id === ingredientId);
-      alert(JSON.stringify(ingredient));
-    },
     showCreateIngredientModal() {
       this.showCreateIngredientModalFlag = !this.showCreateIngredientModalFlag;
     },
@@ -89,28 +86,29 @@ export default {
         this.showIngredientDetailsFlag = true;
     },
     async confirmDeleteIngredient(ingredientId) {
+      const toast = useToast();
       const confirmDelete = confirm('Are you sure you want to delete this ingredient?');
       if (confirmDelete) {
         try {
           const store = useIngredientsStore();
           await store.deleteIngredient(ingredientId);
           this.ingredients = this.ingredients.filter((ingredient) => ingredient.id !== ingredientId);
-          alert('Ingredient deleted successfully!');
+          toast.success('Ingredient deleted successfully!');
         } catch (error) {
-          console.error('Failed to delete ingredient:', error);
-          alert('Failed to delete ingredient.');
+          toast.error('Failed to delete ingredient:', error);
         }
       }
     },
   },
   async mounted() {
+    const toast = useToast();
     this.loading = true;
     const store = useIngredientsStore();
     try {
       await store.fetchIngredients();
       this.ingredients = store.ingredients;
     } catch (error) {
-      console.error('Failed to fetch ingredients:', error);
+      toast.error('Failed to fetch ingredients:', error);
     } finally {
       this.loading = false;
     }
